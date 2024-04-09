@@ -8,9 +8,11 @@ local jdtls_path = "/home/dev/.local/share/nvim/mason/packages/jdtls"
 local path_to_lsp_server = jdtls_path .. "/config_linux"
 local plugins_path = jdtls_path .. "/plugins/"
 local path_to_jar = plugins_path .. "org.eclipse.equinox.launcher_1.6.700.v20231214-2017.jar"
+--local path_to_jar = vim.fn.glob("/home/dev/.local/share/nvim/mason/packages/jdtls/plugins/org.eclipse.equinox.launcher_*.jar"),
 local lombok_path = jdtls_path .. "/lombok.jar"
 
-local root_markers = { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle" }
+--local root_markers = { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle" }
+local root_markers = { ".git", "mvn", "gradle", "pom.xml", "build.gradle" }
 local root_dir = require("jdtls.setup").find_root(root_markers)
 if root_dir == "" then
 	return
@@ -19,14 +21,14 @@ end
 local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
 --local workspace_dir = vim.fn.stdpath("data") .. "/site/java/workspace-root/" .. project_name
 local workspace_dir = "/home/dev/java/workspace-root/" .. project_name
-os.execute("mkdir -t " .. workspace_dir)
+os.execute("mkdir -p " .. workspace_dir)
 
 -- Main Config
 local config = {
 	-- The command that starts the language server
 	-- See: https://github.com/eclipse/eclipse.jdt.ls#running-from-the-command-line
 	cmd = {
-		"/opt/jdk-21.0.1//bin/java",
+		"/opt/jdk-21.0.2/bin/java",
 		"-Declipse.application=org.eclipse.jdt.ls.core.id1",
 		"-Dosgi.bundles.defaultStartLevel=4",
 		"-Declipse.product=org.eclipse.jdt.ls.core.product",
@@ -37,7 +39,6 @@ local config = {
 		"--add-modules=ALL-SYSTEM",
 		"--add-opens", "java.base/java.util=ALL-UNNAMED",
 		"--add-opens", "java.base/java.lang=ALL-UNNAMED",
-
 		"-jar", path_to_jar,
 		"-configuration", path_to_lsp_server,
 		"-data", workspace_dir,
@@ -53,7 +54,7 @@ local config = {
 	settings = {
 		java = {
 			--home = '/Users/ivanermolaev/Library/Java/JavaVirtualMachines/temurin-18.0.1/Contents/Home/',
-			home = "/opt/jdk-21.0.1/",
+			home = "/opt/jdk-21.0.2/",
 			eclipse = {
 				downloadSources = true,
 			},
@@ -63,7 +64,7 @@ local config = {
 					{
 						name = "JavaSE-21",
 						--path = "/Users/ivanermolaev/Library/Java/JavaVirtualMachines/temurin-18.0.1/Contents/Home",
-						path = "/opt/jdk-21.0.1",
+						path = "/opt/jdk-21.0.2",
 					},
 					{
 						--name = "JavaSE-17",
@@ -86,7 +87,8 @@ local config = {
 			format = {
 				enabled = true,
 				settings = {
-					url = vim.fn.stdpath("config") .. "/lang-servers/intellij-java-google-style.xml",
+					--url = vim.fn.stdpath("/home/dev/.local/share/nvim/mason/packages/jdtls/intellij-java-google-style.xml"),
+					url = "/home/dev/.local/share/nvim/mason/packages/jdtls/intellij-java-google-style.xml",
 					profile = "GoogleStyle",
 				},
 			},
