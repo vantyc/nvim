@@ -28,7 +28,7 @@ local config = {
 	-- The command that starts the language server
 	-- See: https://github.com/eclipse/eclipse.jdt.ls#running-from-the-command-line
 	cmd = {
-		"/opt/jdk-21.0.2/bin/java",
+		"/opt/jdk-21.0.1/bin/java",
 		"-Declipse.application=org.eclipse.jdt.ls.core.id1",
 		"-Dosgi.bundles.defaultStartLevel=4",
 		"-Declipse.product=org.eclipse.jdt.ls.core.product",
@@ -54,7 +54,7 @@ local config = {
 	settings = {
 		java = {
 			--home = '/Users/ivanermolaev/Library/Java/JavaVirtualMachines/temurin-18.0.1/Contents/Home/',
-			home = "/opt/jdk-21.0.2/",
+			home = "/opt/jdk-21.0.1/",
 			eclipse = {
 				downloadSources = true,
 			},
@@ -64,7 +64,7 @@ local config = {
 					{
 						name = "JavaSE-21",
 						--path = "/Users/ivanermolaev/Library/Java/JavaVirtualMachines/temurin-18.0.1/Contents/Home",
-						path = "/opt/jdk-21.0.2",
+						path = "/opt/jdk-21.0.1",
 					},
 					{
 						--name = "JavaSE-17",
