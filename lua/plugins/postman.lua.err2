@@ -1,0 +1,7 @@
+return {
+   "diepm/vim-rest-console",
+  config = function()
+    --require("vim-rest-console").setup()
+    require("vim-rest").setup()
+  end,
+}

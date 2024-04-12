@@ -20,3 +20,18 @@ vim.keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>")
 vim.keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<cr>")
 vim.keymap.set("n", "<leader>fd", "<cmd>Telescope diagnostics<cr>")
 vim.keymap.set("n", "<leader>fs", "<cmd>Telescope current_buffer_fuzzy_find<cr>")
+
+-- Postman
+-- Turn off the default key binging
+vim.g.vrc_set_default_mapping = 0
+-- Set the default response conteit type to JSOM
+vim.g.vrc_response_default_content_type = 'application/json'
+-- Set the output buffer name
+vim.vrc_output_buffer_name = '_OUTPUT.json'
+--Fun a format comand on the response buffer
+vim.g.vrc_auto_format_response_patters = {
+    json='jq',
+}
+-- Vim REST Console
+vim.keymap.set("n","<leader>xr", "<cmd>VrcQuery()<CR>" )
+
