@@ -62,7 +62,8 @@ return {
                 cmd = {
 
                   --"java", -- or '/path/to/java17_or_newer/bin/java'
-                 "/opt/jdk-21.0.1/bin/java",
+                 -- "/opt/jdk-21.0.1/bin/java",
+                 "/opt/jdk-22/bin/java",
                   -- depends on if `java` is in your $PATH env variable and if it points to the right version.
 
                   "-javaagent:/home/dev/.local/share/nvim/mason/packages/jdtls/lombok.jar",
@@ -80,8 +81,9 @@ return {
                   "--add-opens",
                   "java.base/java.lang=ALL-UNNAMED",
                   "-jar",
-                  --vim.fn.glob("/usr/share/java/jdtls/plugins/org.eclipse.equinox.launcher_*.jar"),
-                  vim.fn.glob("/home/dev/.local/share/nvim/mason/packages/jdtls/plugins/org.eclipse.equinox.launcher_*.jar"),
+
+                  -- vim.fn.glob("/home/dev/.local/share/nvim/mason/packages/jdtls/plugins/org.eclipse.equinox.launcher_*.jar"),
+                  vim.fn.glob("/home/dev/.local/share/nvim/mason/packages/jdtls/plugins/org.eclipse.equinox.launcher_1.6.800.v20240304-1850.jar"),
                   -- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                       ^^^^^^^^^^^^^^
                   -- Must point to the                                                     Change this to
                   -- eclipse.jdt.ls installation                                           the actual version

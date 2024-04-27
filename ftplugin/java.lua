@@ -7,7 +7,9 @@ end
 local jdtls_path = "/home/dev/.local/share/nvim/mason/packages/jdtls"
 local path_to_lsp_server = jdtls_path .. "/config_linux"
 local plugins_path = jdtls_path .. "/plugins/"
-local path_to_jar = plugins_path .. "org.eclipse.equinox.launcher_1.6.700.v20231214-2017.jar"
+-- local path_to_jar = plugins_path .. "org.eclipse.equinox.launcher_1.6.700.v20231214-2017.jar"
+-- local path_to_jar = plugins_path .. "org.eclipse.equinox.launcher_*.jar"
+local path_to_jar = plugins_path .. "org.eclipse.equinox.launcher_1.6.800.v20240304-1850.jar"
 --local path_to_jar = vim.fn.glob("/home/dev/.local/share/nvim/mason/packages/jdtls/plugins/org.eclipse.equinox.launcher_*.jar"),
 local lombok_path = jdtls_path .. "/lombok.jar"
 
@@ -28,7 +30,9 @@ local config = {
 	-- The command that starts the language server
 	-- See: https://github.com/eclipse/eclipse.jdt.ls#running-from-the-command-line
 	cmd = {
-		"/opt/jdk-21.0.1/bin/java",
+		-- "/opt/jdk-21.0.1/bin/java",
+		-- "/opt/jdk-22/bin/java",
+		"/opt/jdk-22/bin/java",
 		"-Declipse.application=org.eclipse.jdt.ls.core.id1",
 		"-Dosgi.bundles.defaultStartLevel=4",
 		"-Declipse.product=org.eclipse.jdt.ls.core.product",
@@ -53,8 +57,9 @@ local config = {
 	-- for a list of options
 	settings = {
 		java = {
-			--home = '/Users/ivanermolaev/Library/Java/JavaVirtualMachines/temurin-18.0.1/Contents/Home/',
-			home = "/opt/jdk-21.0.1/",
+			--home = '/Users/ivamolaev/Library/Java/JavaVirtualMachines/temurin-18.0.1/Contents/Home/',
+			-- home = "/opt/jdk-22/",
+			home = "/opt/jdk-22/",
 			eclipse = {
 				downloadSources = true,
 			},
@@ -64,7 +69,8 @@ local config = {
 					{
 						name = "JavaSE-21",
 						--path = "/Users/ivanermolaev/Library/Java/JavaVirtualMachines/temurin-18.0.1/Contents/Home",
-						path = "/opt/jdk-21.0.1",
+						-- path = "/opt/jdk-22",
+						path = "/opt/jdk-21/",
 					},
 					{
 						--name = "JavaSE-17",
