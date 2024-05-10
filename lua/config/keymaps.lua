@@ -2,6 +2,8 @@
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
 vim.g.mapleader = " "
+-- Avoid new line while pasting
+vim.keymap.set('n', 'dil', "dd:let @+=matchlist(strtrans(@+),'[ ]*\\zs.*\\ze\\^@')[0]<CR>")
 -- buffer commands
 vim.keymap.set("n", "<leader>q", "<cmd>bd<cr>")
 vim.keymap.set("n", "<leader>s", "<cmd>write<cr>")
@@ -11,7 +13,7 @@ vim.keymap.set("n", "<leader>0", "<cmd>bn<cr>")
 
 -- switch file explorer
 vim.keymap.set("n", "<leader>e", "<c-w><c-w>")
-vim.keymap.set("n", "<leader>n", "<cmd>Neotree toggle<cr>")
+vim.keymap.set("n", "<leader>n", "<cmd>NvimTreeToggle<cr>")
 
 -- Telescope
 vim.keymap.set("n", "<leader>?", "<cmd>Telescope oldfiles<cr>")
