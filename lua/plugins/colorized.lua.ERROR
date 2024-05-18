@@ -1,0 +1,7 @@
+-- lua with packer.nvim
+return {
+    "luochen1990/rainbow",
+  config = function()
+    require("rainbow").setup()
+  end,
+}

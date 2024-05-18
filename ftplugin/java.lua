@@ -9,7 +9,7 @@ local path_to_lsp_server = jdtls_path .. "/config_linux"
 local plugins_path = jdtls_path .. "/plugins/"
 -- local path_to_jar = plugins_path .. "org.eclipse.equinox.launcher_1.6.700.v20231214-2017.jar"
 -- local path_to_jar = plugins_path .. "org.eclipse.equinox.launcher_*.jar"
-local path_to_jar = plugins_path .. "org.eclipse.equinox.launcher_1.6.800.v20240304-1850.jar"
+local path_to_jar = plugins_path .. "org.eclipse.equinox.launcher_1.6.800.v20240330-1250.jar"
 --local path_to_jar = vim.fn.glob("/home/dev/.local/share/nvim/mason/packages/jdtls/plugins/org.eclipse.equinox.launcher_*.jar"),
 local lombok_path = jdtls_path .. "/lombok.jar"
 
