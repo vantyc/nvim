@@ -29,13 +29,22 @@ return {
             local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 			local lspconfig = require("lspconfig")
+            local util = require("lspconfig/util")
 
+            lspconfig.gopls.setup{
+                on_attach = on_attach,
+                capabilities = capabilities,
+                cmd = {"gopls"},
+                filetypes = {"go", "gomod", "goowrk", "gotmpl"},
+                root_dir = util.root_pattern("go.work","go.mod","git"),
+            }
 			--lspconfig.jdtls.setup({
              --  capabilities = capabilities
             --})
 			lspconfig.lua_ls.setup({
                 capabilities = capabilities
             })
+
 
 			vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
 			vim.keymap.set("n", "gd", vim.lsp.buf.definition, {})
