@@ -5,7 +5,6 @@ local keymap = vim.keymap
 
 -- Java
 keymap.set("n", '<F9>', '<cmd>!java %<cr>')
--- keymap.set("i", '<F9>', '<Esc>w!<cr>java %<cr>')
 keymap.set("i", '<F9>', '<Esc>:w<cr><cmd>!java %<cr>')
 
 -- buffers
