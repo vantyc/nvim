@@ -4,8 +4,10 @@ vim.g.mapleader = " "
 local keymap = vim.keymap
 
 -- Java
-keymap.set("n", '<F9>', '<cmd>!java %<cr>')
-keymap.set("i", '<F9>', '<cmd>w!<cr><Esc><cmd>!java %<cr>')
+keymap.set("n", '<F9>', '<cmd>w!<cr><cmd>!java %<cr>')
+-- keymap.set("i", '<F9>', '<Esc>:w!<cr><cmd>!java %<cr>')
+-- keymap.set("i", '<F9>', '<Esc>:w!<cr><cmd>!java %<cr>')kk
+keymap.set("i", '<F9>', '<Esc>:w!<cr><cmd>!java %<cr>')
 
 -- buffers
 vim.keymap.set("n", "<leader>9", "<cmd>bp<cr>")
