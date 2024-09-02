@@ -1,4 +1,3 @@
--- lua with packer.nvim
 return {
   "max397574/better-escape.nvim",
   config = function()

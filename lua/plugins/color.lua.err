@@ -1,0 +1,11 @@
+
+return {
+  -- "folke/tokyonight.nvim",
+  -- "ellisonleao/gruvbox.nvim",
+  "Shatur/neovim-ayu",
+  config = function()
+    -- require("tokyonight").setup()
+    -- require("gruvbox").setup()
+    require("ayu").setup()
+  end,
+}

@@ -53,3 +53,8 @@ opt.foldlevel = 20
 opt.foldmethod = "expr"
 opt.foldexpr = "nvim_treesitter#foldexpr()" -- Utilize Treesitter folds
 
+-- color
+vim.o.background = "dark" -- or "light" for light mode
+vim.cmd([[colorscheme ayu]])
+-- vim.cmd([[colorscheme gruvbox]])
+-- vim.cmd([[colorscheme tokyonight]])
