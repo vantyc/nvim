@@ -4,10 +4,10 @@ vim.g.mapleader = " "
 local keymap = vim.keymap
 
 -- Java
-keymap.set("n", '<F9>', '<cmd>w!<cr><cmd>!java %<cr>')
+-- keymap.set("n", '<F9>', '<cmd>w!<cr><cmd>!java %<cr>')
 -- keymap.set("i", '<F9>', '<Esc>:w!<cr><cmd>!java %<cr>')
--- keymap.set("i", '<F9>', '<Esc>:w!<cr><cmd>!java %<cr>')kk
-keymap.set("i", '<F9>', '<Esc>:w!<cr><cmd>!java %<cr>')
+keymap.set("n", '<F9>', '<cmd>w!<cr><cmd>!javac  --release 22 --enable-preview %; java --enable-preview %:t:r<cr>')
+keymap.set("i", '<F9>', '<Esc>:w!<cr><cmd>!javac --release 22 --enable-preview %: java --enable-preview %:t:r<cr>')
 
 -- buffers
 vim.keymap.set("n", "<leader>9", "<cmd>bp<cr>")
@@ -17,7 +17,8 @@ vim.keymap.set("n", "<leader>0", "<cmd>bn<cr>")
 -- General keymaps
 keymap.set("n", "<leader>s", "<cmd>w!<cr>") -- save
 keymap.set("n", "<leader>wq", ":wq<CR>") -- save and quit
-keymap.set("n", "<leader>q", ":q!<CR>") -- quit without saving
+-- keymap.set("n", "<leader>q", ":q!<CR>") -- quit without saving
+keymap.set("n", "<leader>q", ":bd<CR>") -- quit without saving
 keymap.set("n", "<leader>ww", ":w<CR>") -- save
 keymap.set("n", "gx", ":!open <c-r><c-a><CR>") -- open URL under cursor
 

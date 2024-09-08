@@ -15,7 +15,17 @@ return {
     indent = { enable = true },
     auto_install = true, -- automatically install syntax support when entering new file type buffer
     ensure_installed = {
+      'bash',
+      'css',
+      'dockerfile',
+      'html',
+      'java',
+      'javascript',
       'lua',
+      'rust',
+      'scss',
+      'typescript',
+      'yaml',
     },
   },
   config = function (_, opts)
