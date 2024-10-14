@@ -4,10 +4,10 @@ vim.g.mapleader = " "
 local keymap = vim.keymap
 
 -- Java
--- keymap.set("n", '<F9>', '<cmd>w!<cr><cmd>!java %<cr>')
--- keymap.set("i", '<F9>', '<Esc>:w!<cr><cmd>!java %<cr>')
-keymap.set("n", '<F9>', '<cmd>w!<cr><cmd>!javac  --release 22 --enable-preview %; java --enable-preview %:t:r<cr>')
-keymap.set("i", '<F9>', '<Esc>:w!<cr><cmd>!javac --release 22 --enable-preview %: java --enable-preview %:t:r<cr>')
+keymap.set("n", '<F9>', '<cmd>w!<cr><cmd>!java %<cr>')
+keymap.set("i", '<F9>', '<Esc>:w!<cr><cmd>!java %<cr>')
+-- keymap.set("n", '<F9>', '<cmd>w!<cr><cmd>!javac  --release 22 --enable-preview %; java --enable-preview %:t:r<cr>')
+-- keymap.set("i", '<F9>', '<Esc>:w!<cr><cmd>!javac --release 22 --enable-preview %: java --enable-preview %:t:r<cr>')
 
 -- buffers
 vim.keymap.set("n", "<leader>9", "<cmd>bp<cr>")
@@ -93,7 +93,7 @@ keymap.set("n", "<leader>h9", function() require("harpoon.ui").nav_file(9) end)
 keymap.set("n", "<leader>xr", ":call VrcQuery()<CR>") -- Run REST query
 
 -- LSP
-keymap.set('n', '<leader>gg', '<cmd>lua vim.lsp.buf.hover()<CR>')
+keymap.set('n', '<leader>gh', '<cmd>lua vim.lsp.buf.hover()<CR>')
 keymap.set('n', '<leader>gd', '<cmd>lua vim.lsp.buf.definition()<CR>')
 keymap.set('n', '<leader>gD', '<cmd>lua vim.lsp.buf.declaration()<CR>')
 keymap.set('n', '<leader>gi', '<cmd>lua vim.lsp.buf.implementation()<CR>')
@@ -103,7 +103,7 @@ keymap.set('n', '<leader>gs', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
 keymap.set('n', '<leader>rr', '<cmd>lua vim.lsp.buf.rename()<CR>')
 keymap.set('n', '<leader>gf', '<cmd>lua vim.lsp.buf.format({async = true})<CR>')
 keymap.set('v', '<leader>gf', '<cmd>lua vim.lsp.buf.format({async = true})<CR>')
-keymap.set('n', '<leader>ga', '<cmd>lua vim.lsp.buf.code_action()<CR>')
+keymap.set('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>')
 keymap.set('n', '<leader>gl', '<cmd>lua vim.diagnostic.open_float()<CR>')
 keymap.set('n', '<leader>gp', '<cmd>lua vim.diagnostic.goto_prev()<CR>')
 keymap.set('n', '<leader>gn', '<cmd>lua vim.diagnostic.goto_next()<CR>')
