@@ -34,7 +34,7 @@ return {
         'lua_ls',
         'jdtls',
         -- 'jsonls', -- requires npm to be installed
-        'lemminx',
+        -- 'lemminx',
         'marksman',
         'quick_lint_js',
         -- 'yamlls', -- requires npm to be installed
