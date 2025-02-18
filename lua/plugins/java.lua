@@ -9,7 +9,7 @@ local bundles = {
 }
 
 -- Needed for running/debugging unit tests
-vim.list_extend(bundles, vim.split(vim.fn.glob(vim.env.HOME .. "/.local/share/nvim/mason/share/java-test/*.jar", 1), "\n"))
+vim.list_extend(bundles, vim.split(vim.fn.glob(vim.env.HOME .. "/.local/share/nvim/mason/share/java-test/*.jar", false), "\n"))
 
 -- See `:help vim.lsp.start_client` for an overview of the supported `config` options.
 local config = {
@@ -52,7 +52,7 @@ local config = {
       configuration = {
         updateBuildConfiguration = "interactive",
         -- TODO Update this by adding any runtimes that you need to support your Java projects and removing any that you don't have installed
-        -- The runtime name parameters need to match specific Java execution environments.  See https://github.com/tamago324/nlsp-settings.nvim/blob/2a52e793d4f293c0e1d61ee5794e3ff62bfbbb5d/schemas/_generated/jdtls.json#L317-L334
+        -- The runtime name parameters need to match specific Java execution environments.  See https://github.com/tamago324/nlsp-settings.nvim/blob/2a52e793d4f293c0e1d61ee5794e3ff62bfbbb5d/schema...
         runtimes = {
           -- {
           --   name = "JavaSE-11",
@@ -133,11 +133,10 @@ local config = {
 }
 
 -- Needed for debugging
-config['on_attach'] = function(client, bufnr)
-  jdtls.setup_dap({ hotcodereplace = 'auto' })
+config['on_attach'] = function()
+  jdtls.setup_dap({ hotcodereplace = 'auto', config_overrides = {} })
   require('jdtls.dap').setup_dap_main_class_configs()
 end
 
 -- This starts a new client & server, or attaches to an existing client & server based on the `root_dir`.
 jdtls.start_or_attach(config)
-
