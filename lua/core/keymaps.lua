@@ -5,7 +5,10 @@ local keymap = vim.keymap
 
 -- Java
 keymap.set("n", '<F9>', '<cmd>w!<cr><cmd>!java %<cr>')
-keymap.set("i", '<F9>', '<Esc>:w!<cr><cmd>!java %<cr>')
+-- keymap.set("i", '<F9>', '<Esc>:w!<cr><cmd>!java %<cr>')
+-- Usa una terminal en Neovim para ejecutar el programa Java
+vim.api.nvim_set_keymap('n', '<F9>', ':w<CR>:term java %<CR>i', { noremap = true, silent = true })
+
 -- keymap.set("n", '<F9>', '<cmd>w!<cr><cmd>!javac  --release 22 --enable-preview %; java --enable-preview %:t:r<cr>')
 -- keymap.set("i", '<F9>', '<Esc>:w!<cr><cmd>!javac --release 22 --enable-preview %: java --enable-preview %:t:r<cr>')
 
@@ -13,7 +16,8 @@ keymap.set("i", '<F9>', '<Esc>:w!<cr><cmd>!java %<cr>')
 vim.keymap.set("n", "<leader>9", "<cmd>bp<cr>")
 vim.keymap.set("n", "<leader>0", "<cmd>bn<cr>")
 
-
+-- prompt copilot
+vim.keymap.set("n", "<leader>p", "<cmd>lua require('prompt').create_prompt()<CR>", { noremap = true, silent = true })
 -- General keymaps
 keymap.set("n", "<leader>s", "<cmd>w!<cr>") -- save
 keymap.set("n", "<leader>wq", ":wq<CR>") -- save and quit
