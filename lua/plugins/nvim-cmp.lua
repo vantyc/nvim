@@ -5,23 +5,14 @@ return {
   event = 'InsertEnter',
   dependencies = {
     -- Snippet engine & associated nvim-cmp source
-    -- https://github.com/L3MON4D3/LuaSnip
     'L3MON4D3/LuaSnip',
-    -- https://github.com/saadparwaiz1/cmp_luasnip
     'saadparwaiz1/cmp_luasnip',
-
     -- LSP completion capabilities
-    -- https://github.com/hrsh7th/cmp-nvim-lsp
     'hrsh7th/cmp-nvim-lsp',
-
     -- Additional user-friendly snippets
-    -- https://github.com/rafamadriz/friendly-snippets
     'rafamadriz/friendly-snippets',
-    -- https://github.com/hrsh7th/cmp-buffer
     'hrsh7th/cmp-buffer',
-    -- https://github.com/hrsh7th/cmp-path
     'hrsh7th/cmp-path',
-    -- https://github.com/hrsh7th/cmp-cmdline
     'hrsh7th/cmp-cmdline',
   },
   config = function()
@@ -49,7 +40,6 @@ return {
           behavior = cmp.ConfirmBehavior.Replace,
           select = true,
         },
-	-- Tab through suggestions or when a snippet is active, tab to the next argument
         ['<Tab>'] = cmp.mapping(function(fallback)
           if cmp.visible() then
             cmp.select_next_item()
@@ -59,7 +49,6 @@ return {
             fallback()
           end
         end, { 'i', 's' }),
-	-- Tab backwards through suggestions or when a snippet is active, tab to the next argument
         ['<S-Tab>'] = cmp.mapping(function(fallback)
           if cmp.visible() then
             cmp.select_prev_item()
@@ -72,17 +61,83 @@ return {
       },
       sources = cmp.config.sources({
         { name = "supermaven" },
-        { name = "nvim_lsp" }, -- lsp 
-        { name = "luasnip" }, -- snippets
-        { name = "buffer" }, -- text within current buffer
-        { name = "path" }, -- file system paths
+        { name = "nvim_lsp" },
+        { name = "luasnip" },
+        { name = "buffer" },
+        { name = "path" },
       }),
       window = {
-        -- Add borders to completions popups
         completion = cmp.config.window.bordered(),
         documentation = cmp.config.window.bordered(),
       },
+      formatting = {
+        format = function(entry, vim_item)
+          vim_item.menu = ({
+            nvim_lsp = "[LSP]",
+            luasnip = "[Snippet]",
+            buffer = "[Buffer]",
+            path = "[Path]",
+            supermaven = "[Supermaven]",
+          })[entry.source.name]
+          return vim_item
+        end,
+      },
     })
-  end,
- }
+
+    -- 🔥 Toggle Supermaven
+    local supermaven_enabled = true
+    vim.keymap.set('n', '<leader>sm', function()
+      if supermaven_enabled then
+        cmp.setup.buffer({
+          sources = {
+            { name = "nvim_lsp" },
+            { name = "luasnip" },
+            { name = "buffer" },
+            { name = "path" },
+          }
+        })
+        print("🛑 Supermaven Desactivado")
+      else
+        cmp.setup.buffer({
+          sources = {
+            { name = "supermaven" },
+            { name = "nvim_lsp" },
+            { name = "luasnip" },
+            { name = "buffer" },
+            { name = "path" },
+          }
+        })
+        print("✅ Supermaven Activado")
+      end
+      supermaven_enabled = not supermaven_enabled
+    end, { noremap = true, silent = true, desc = "Toggle Supermaven" })
+
+    -- 🔥 Toggle Snippets
+    local snippets_enabled = true
+    vim.keymap.set('n', '<leader>ss', function()
+      if snippets_enabled then
+        cmp.setup.buffer({
+          sources = {
+            { name = "nvim_lsp" },
+            { name = "buffer" },
+            { name = "path" },
+          }
+        })
+        print("🛑 Snippets Desactivados")
+      else
+        cmp.setup.buffer({
+          sources = {
+            { name = "nvim_lsp" },
+            { name = "luasnip" },
+            { name = "buffer" },
+            { name = "path" },
+          }
+        })
+        print("✅ Snippets Activados")
+      end
+      snippets_enabled = not snippets_enabled
+    end, { noremap = true, silent = true, desc = "Toggle Snippets" })
+
+  end -- 👈 ESTE ES EL END QUE FALTABA PARA CERRAR FUNCTION
+}
 

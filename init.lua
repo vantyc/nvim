@@ -21,6 +21,10 @@ require("lazy").setup("plugins", {
     enabled = true, -- automatically check for config file changes and reload the ui
     notify = false, -- turn off notifications whenever plugin changes are made
   },
+  rocks = {
+    enabled = false,   -- deshabilita el soporte de luarocks completamente
+    hererocks = false, -- deshabilita hererocks específicamente
+  },
 })
 
 -- These modules are not loaded by lazy

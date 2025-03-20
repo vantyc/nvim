@@ -2,6 +2,7 @@ return {
   "yetone/avante.nvim",
   dependencies = {
     "MunifTanjim/nui.nvim",
+    "stevearc/dressing.nvim",
   },
   config = function()
     require("avante").setup({

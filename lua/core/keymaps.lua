@@ -5,26 +5,22 @@ local keymap = vim.keymap
 
 -- Java
 keymap.set("n", '<F9>', '<cmd>w!<cr><cmd>!java %<cr>')
--- keymap.set("i", '<F9>', '<Esc>:w!<cr><cmd>!java %<cr>')
--- Usa una terminal en Neovim para ejecutar el programa Java
 vim.api.nvim_set_keymap('n', '<F9>', ':w<CR>:term java %<CR>i', { noremap = true, silent = true })
 
--- keymap.set("n", '<F9>', '<cmd>w!<cr><cmd>!javac  --release 22 --enable-preview %; java --enable-preview %:t:r<cr>')
--- keymap.set("i", '<F9>', '<Esc>:w!<cr><cmd>!javac --release 22 --enable-preview %: java --enable-preview %:t:r<cr>')
+-- Buffers
+keymap.set("n", "<leader>9", "<cmd>bp<cr>")
+keymap.set("n", "<leader>0", "<cmd>bn<cr>")
 
--- buffers
-vim.keymap.set("n", "<leader>9", "<cmd>bp<cr>")
-vim.keymap.set("n", "<leader>0", "<cmd>bn<cr>")
+-- Prompt Copilot
+keymap.set("n", "<leader>p", "<cmd>lua require('prompt').create_prompt()<CR>", { noremap = true, silent = true })
 
--- prompt copilot
-vim.keymap.set("n", "<leader>p", "<cmd>lua require('prompt').create_prompt()<CR>", { noremap = true, silent = true })
 -- General keymaps
 keymap.set("n", "<leader>s", "<cmd>w!<cr>") -- save
 keymap.set("n", "<leader>wq", ":wq<CR>") -- save and quit
--- keymap.set("n", "<leader>q", ":q!<CR>") -- quit without saving
-keymap.set("n", "<leader>q", ":bd<CR>") -- quit without saving
+keymap.set("n", "<leader>q", ":bd<CR>") -- close buffer
 keymap.set("n", "<leader>ww", ":w<CR>") -- save
 keymap.set("n", "gx", ":!open <c-r><c-a><CR>") -- open URL under cursor
+keymap.set("n", "<C-w>", ":set wrap!<CR>") -- toggle wrap
 
 -- Split window management
 keymap.set("n", "<leader>sv", "<C-w>v") -- split window vertically
@@ -41,6 +37,26 @@ keymap.set("n", "<leader>to", ":tabnew<CR>") -- open a new tab
 keymap.set("n", "<leader>tx", ":tabclose<CR>") -- close a tab
 keymap.set("n", "<leader>tn", ":tabn<CR>") -- next tab
 keymap.set("n", "<leader>tp", ":tabp<CR>") -- previous tab
+
+-- Toggle autocompletion (nvim-cmp) and remove supermaven
+keymap.set("n", "<leader>ac", function()
+    local cmp = require('cmp')
+    if cmp.get_config().enabled then
+        cmp.setup.buffer({ enabled = false, sources = {} }) -- Desactiva y elimina fuentes
+        print("Auto-completion disabled")
+    else
+        cmp.setup.buffer({
+            enabled = true,
+            sources = {
+                { name = "nvim_lsp" },
+                { name = "luasnip" },
+                { name = "buffer" },
+                { name = "path" }
+            }
+        })
+        print("Auto-completion enabled")
+    end
+end, { noremap = true, silent = true })
 
 -- Diff keymaps
 keymap.set("n", "<leader>cc", ":diffput<CR>") -- put diff from current to other during diff
@@ -62,9 +78,7 @@ keymap.set("n", "<leader>sm", ":MaximizerToggle<CR>") -- toggle maximize tab
 
 -- Nvim-tree
 keymap.set("n", "<leader>n", "<cmd>NvimTreeToggle<cr>")
--- keymap.set("n", "<leader>n", ":NvimTreeToggle<CR>") -- toggle file explorer
 keymap.set("n", "<leader>e", "<c-w><c-w>")
--- keymap.set("n", "<leader>e", ":NvimTreeFocus<CR>") -- toggle focus to file explorer
 keymap.set("n", "<leader>ef", ":NvimTreeFindFile<CR>") -- find file in file explorer
 
 -- Telescope
@@ -75,7 +89,6 @@ keymap.set('n', '<leader>fh', require('telescope.builtin').help_tags, {})
 keymap.set('n', '<leader>fs', require('telescope.builtin').current_buffer_fuzzy_find, {})
 keymap.set('n', '<leader>fo', require('telescope.builtin').lsp_document_symbols, {})
 keymap.set('n', '<leader>fi', require('telescope.builtin').lsp_incoming_calls, {})
-keymap.set('n', '<leader>fm', function() require('telescope.builtin').treesitter({default_text=":method:"}) end)
 
 -- Git-blame
 keymap.set("n", "<leader>gb", ":GitBlameToggle<CR>") -- toggle git blame
@@ -83,15 +96,9 @@ keymap.set("n", "<leader>gb", ":GitBlameToggle<CR>") -- toggle git blame
 -- Harpoon
 keymap.set("n", "<leader>ha", require("harpoon.mark").add_file)
 keymap.set("n", "<leader>hh", require("harpoon.ui").toggle_quick_menu)
-keymap.set("n", "<leader>h1", function() require("harpoon.ui").nav_file(1) end)
-keymap.set("n", "<leader>h2", function() require("harpoon.ui").nav_file(2) end)
-keymap.set("n", "<leader>h3", function() require("harpoon.ui").nav_file(3) end)
-keymap.set("n", "<leader>h4", function() require("harpoon.ui").nav_file(4) end)
-keymap.set("n", "<leader>h5", function() require("harpoon.ui").nav_file(5) end)
-keymap.set("n", "<leader>h6", function() require("harpoon.ui").nav_file(6) end)
-keymap.set("n", "<leader>h7", function() require("harpoon.ui").nav_file(7) end)
-keymap.set("n", "<leader>h8", function() require("harpoon.ui").nav_file(8) end)
-keymap.set("n", "<leader>h9", function() require("harpoon.ui").nav_file(9) end)
+for i = 1, 9 do
+    keymap.set("n", "<leader>h" .. i, function() require("harpoon.ui").nav_file(i) end)
+end
 
 -- Vim REST Console
 keymap.set("n", "<leader>xr", ":call VrcQuery()<CR>") -- Run REST query
@@ -114,23 +121,35 @@ keymap.set('n', '<leader>gn', '<cmd>lua vim.diagnostic.goto_next()<CR>')
 keymap.set('n', '<leader>tr', '<cmd>lua vim.lsp.buf.document_symbol()<CR>')
 keymap.set('i', '<C-Space>', '<cmd>lua vim.lsp.buf.completion()<CR>')
 
--- Debugging
-keymap.set("n", "<leader>bb", "<cmd>lua require'dap'.toggle_breakpoint()<cr>")
-keymap.set("n", "<leader>bc", "<cmd>lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<cr>")
-keymap.set("n", "<leader>bl", "<cmd>lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<cr>")
-keymap.set("n", '<leader>br', "<cmd>lua require'dap'.clear_breakpoints()<cr>")
-keymap.set("n", '<leader>ba', '<cmd>Telescope dap list_breakpoints<cr>')
-keymap.set("n", "<leader>dc", "<cmd>lua require'dap'.continue()<cr>")
-keymap.set("n", "<leader>dj", "<cmd>lua require'dap'.step_over()<cr>")
-keymap.set("n", "<leader>dk", "<cmd>lua require'dap'.step_into()<cr>")
-keymap.set("n", "<leader>do", "<cmd>lua require'dap'.step_out()<cr>")
-keymap.set("n", '<leader>dd', function() require('dap').disconnect(); require('dapui').close(); end)
-keymap.set("n", '<leader>dt', function() require('dap').terminate(); require('dapui').close(); end)
-keymap.set("n", "<leader>dr", "<cmd>lua require'dap'.repl.toggle()<cr>")
-keymap.set("n", "<leader>dl", "<cmd>lua require'dap'.run_last()<cr>")
-keymap.set("n", '<leader>di', function() require "dap.ui.widgets".hover() end)
-keymap.set("n", '<leader>d?', function() local widgets = require "dap.ui.widgets"; widgets.centered_float(widgets.scopes) end)
-keymap.set("n", '<leader>df', '<cmd>Telescope dap frames<cr>')
-keymap.set("n", '<leader>dh', '<cmd>Telescope dap commands<cr>')
-keymap.set("n", '<leader>de', function() require('telescope.builtin').diagnostics({default_text=":E:"}) end)
+-- Toggle Supermaven correctamente sin afectar LSP ni snippets
+local supermaven_enabled = true
+
+vim.keymap.set('n', '<leader>sm', function()
+  local cmp = require('cmp')
+  if supermaven_enabled then
+    -- Quitamos Supermaven de las sources
+    cmp.setup.buffer {
+      sources = {
+        { name = "nvim_lsp" }, -- Deja activo LSP
+        { name = "luasnip" },  -- Snippets
+        { name = "buffer" },
+        { name = "path" },
+      }
+    }
+    print("🛑 Supermaven Desactivado")
+  else
+    -- Volvemos a agregar Supermaven
+    cmp.setup.buffer {
+      sources = {
+        { name = "supermaven" }, -- Reactivas Supermaven
+        { name = "nvim_lsp" },
+        { name = "luasnip" },
+        { name = "buffer" },
+        { name = "path" },
+      }
+    }
+    print("✅ Supermaven Activado")
+  end
+  supermaven_enabled = not supermaven_enabled
+end, { noremap = true, silent = true, desc = "Toggle Supermaven" })
 
