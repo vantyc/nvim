@@ -5,6 +5,8 @@ local keymap = vim.keymap
 
 -- Java
 keymap.set("n", '<F9>', '<cmd>w!<cr><cmd>!java %<cr>')
+-- F9 también funciona desde modo inserción: guarda, compila y vuelve a inserción
+vim.api.nvim_set_keymap('i', '<F9>', '<Esc>:w<CR>:term java %<CR>i', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<F9>', ':w<CR>:term java %<CR>i', { noremap = true, silent = true })
 
 -- Buffers
@@ -153,3 +155,11 @@ vim.keymap.set('n', '<leader>sm', function()
   supermaven_enabled = not supermaven_enabled
 end, { noremap = true, silent = true, desc = "Toggle Supermaven" })
 
+vim.api.nvim_create_user_command("FormatJava", function()
+  local file = vim.fn.expand("%")
+  vim.cmd("write") -- Guarda antes de formatear
+  os.execute("google-java-format -i " .. file)
+  vim.cmd("edit")  -- Recarga archivo
+end, {})
+
+vim.keymap.set("n", "<leader>fj", ":FormatJava<CR>", { desc = "Formatear Java con google-java-format" })

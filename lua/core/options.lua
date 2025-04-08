@@ -1,60 +1,67 @@
 local opt = vim.opt
 
--- Session Management
-opt.sessionoptions="blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+-- === Session Management ===
+opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 
--- Line Numbers
+-- === Line Numbers ===
 opt.relativenumber = true
 opt.number = true
 
--- Tabs & Indentation
+-- === Tabs & Indentation ===
 opt.tabstop = 2
 opt.shiftwidth = 2
 opt.expandtab = true
 opt.autoindent = true
 vim.bo.softtabstop = 2
 
--- Line Wrapping
+-- === Line Wrapping ===
 opt.wrap = false
 
--- Search Settings
+-- === Search Settings ===
 opt.ignorecase = true
 opt.smartcase = true
 
--- Cursor Line
+-- === Cursor Line ===
 opt.cursorline = true
 
--- Appearance
+-- === Appearance ===
 opt.termguicolors = true
 opt.background = "dark"
 opt.signcolumn = "yes"
-vim.diagnostic.config {
-  float = { border = "rounded" }, -- add border to diagnostic popups
-}
+vim.diagnostic.config({
+  float = { border = "rounded" },
+})
 
--- Backspace
+-- === Backspace ===
 opt.backspace = "indent,eol,start"
 
--- Clipboard
+-- === Clipboard ===
 opt.clipboard:append("unnamedplus")
 
--- Split Windows
+-- === Split Windows ===
 opt.splitright = true
 opt.splitbelow = true
 
--- Consider - as part of keyword
+-- === Consider - as part of keyword ===
 opt.iskeyword:append("-")
 
--- Disable the mouse while in nvim
+-- === Mouse ===
 opt.mouse = ""
 
--- Folding
+-- === Folding (Treesitter) ===
 opt.foldlevel = 20
 opt.foldmethod = "expr"
-opt.foldexpr = "nvim_treesitter#foldexpr()" -- Utilize Treesitter folds
+opt.foldexpr = "nvim_treesitter#foldexpr()"
 
--- color
-vim.o.background = "dark" -- or "light" for light mode
+-- === Syntax & Filetype ===
+vim.cmd("syntax enable")
+vim.cmd("filetype plugin indent on")
+
+-- === Color scheme (elige uno) ===
 vim.cmd([[colorscheme ayu]])
 -- vim.cmd([[colorscheme gruvbox]])
 -- vim.cmd([[colorscheme tokyonight]])
+
+-- === Treesitter Highlight (por si lo quieres forzar) ===
+vim.cmd("autocmd BufReadPost,BufNewFile *.java TSBufEnable highlight")
+
