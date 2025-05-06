@@ -61,7 +61,3 @@ vim.cmd("filetype plugin indent on")
 vim.cmd([[colorscheme ayu]])
 -- vim.cmd([[colorscheme gruvbox]])
 -- vim.cmd([[colorscheme tokyonight]])
-
--- === Treesitter Highlight (por si lo quieres forzar) ===
-vim.cmd("autocmd BufReadPost,BufNewFile *.java TSBufEnable highlight")
-
