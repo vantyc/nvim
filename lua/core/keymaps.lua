@@ -4,10 +4,8 @@ vim.g.mapleader = " "
 local keymap = vim.keymap
 
 -- Java
-keymap.set("n", '<F9>', '<cmd>w!<cr><cmd>!java %<cr>')
--- F9 también funciona desde modo inserción: guarda, compila y vuelve a inserción
-vim.api.nvim_set_keymap('i', '<F9>', '<Esc>:w<CR>:term java %<CR>i', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<F9>', ':w<CR>:term java %<CR>i', { noremap = true, silent = true })
+keymap.set("n", "<F9>", "<cmd>w<CR><cmd>term java %<CR>", { noremap = true, silent = true })
+keymap.set("i", "<F9>", "<Esc><cmd>w<CR><cmd>term java %<CR>", { noremap = true, silent = true })
 
 -- Buffers
 keymap.set("n", "<leader>9", "<cmd>bp<cr>")
@@ -21,7 +19,8 @@ keymap.set("n", "<leader>s", "<cmd>w!<cr>") -- save
 keymap.set("n", "<leader>wq", ":wq<CR>") -- save and quit
 keymap.set("n", "<leader>q", ":bd<CR>") -- close buffer
 keymap.set("n", "<leader>ww", ":w<CR>") -- save
-keymap.set("n", "gx", ":!open <c-r><c-a><CR>") -- open URL under cursor
+local gx_cmd = vim.fn.has("win32") == 1 and "start" or (vim.fn.has("mac") == 1 and "open" or "xdg-open")
+keymap.set("n", "gx", ":!" .. gx_cmd .. " <c-r><c-a><CR>", { noremap = true }) -- open URL under cursor
 keymap.set("n", "<C-w>", ":set wrap!<CR>") -- toggle wrap
 
 -- Split window management
@@ -31,8 +30,8 @@ keymap.set("n", "<leader>se", "<C-w>=") -- make split windows equal width
 keymap.set("n", "<leader>sx", ":close<CR>") -- close split window
 keymap.set("n", "<leader>sj", "<C-w>-") -- make split window height shorter
 keymap.set("n", "<leader>sk", "<C-w>+") -- make split windows height taller
-keymap.set("n", "<leader>sl", "<C-w>>5") -- make split windows width bigger 
-keymap.set("n", "<leader>sh", "<C-w><5") -- make split windows width smaller
+keymap.set("n", "<leader>sl", "<C-w>>5") -- make split windows width bigger
+keymap.set("n", "<leader>sH", "<C-w><<5") -- make split windows width smaller
 
 -- Tab management
 keymap.set("n", "<leader>to", ":tabnew<CR>") -- open a new tab
@@ -60,8 +59,8 @@ keymap.set("n", "<leader>ac", function()
     end
 end, { noremap = true, silent = true })
 
--- Diff keymaps
-keymap.set("n", "<leader>cc", ":diffput<CR>") -- put diff from current to other during diff
+-- Diff keymaps (<leader>cc = avante chat; <leader>cd para diff en merge)
+keymap.set("n", "<leader>cd", ":diffput<CR>") -- put diff from current to other during diff
 keymap.set("n", "<leader>cj", ":diffget 1<CR>") -- get diff from left (local) during merge
 keymap.set("n", "<leader>ck", ":diffget 3<CR>") -- get diff from right (remote) during merge
 keymap.set("n", "<leader>cn", "]c") -- next diff hunk
@@ -76,7 +75,7 @@ keymap.set("n", "<leader>ql", ":clast<CR>") -- jump to last quickfix list item
 keymap.set("n", "<leader>qc", ":cclose<CR>") -- close quickfix list
 
 -- Vim-maximizer
-keymap.set("n", "<leader>sm", ":MaximizerToggle<CR>") -- toggle maximize tab
+keymap.set("n", "<leader>sm", ":MaximizerToggle<CR>", { desc = "toggle maximize tab" })
 
 -- Nvim-tree
 keymap.set("n", "<leader>n", "<cmd>NvimTreeToggle<cr>")
@@ -94,6 +93,26 @@ keymap.set('n', '<leader>fi', require('telescope.builtin').lsp_incoming_calls, {
 
 -- Git-blame
 keymap.set("n", "<leader>gb", ":GitBlameToggle<CR>") -- toggle git blame
+
+-- Kubernetes: terminal flotante con kubectl
+local function k8s_float_term(cmd)
+  local buf = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_open_win(buf, true, {
+    relative = 'editor',
+    width = math.floor(vim.o.columns * 0.9),
+    height = math.floor(vim.o.lines * 0.8),
+    row = math.floor((vim.o.lines - vim.o.lines * 0.8) / 2),
+    col = math.floor((vim.o.columns - vim.o.columns * 0.9) / 2),
+    style = 'minimal',
+    border = 'rounded',
+  })
+  vim.api.nvim_buf_set_keymap(buf, 't', '<Esc>', '<C-\\><C-n>', { noremap = true })
+  vim.api.nvim_buf_set_keymap(buf, 't', 'q', '<C-\\><C-n>:close<CR>', { noremap = true })
+  vim.fn.termopen(cmd, { cwd = vim.fn.getcwd() })
+  vim.cmd('startinsert')
+end
+keymap.set("n", "<leader>kp", function() k8s_float_term("kubectl get pods -A") end, { desc = "K8s: get pods -A" })
+keymap.set("n", "<leader>kl", function() k8s_float_term("kubectl logs -f") end, { desc = "K8s: logs -f" })
 
 -- Harpoon
 keymap.set("n", "<leader>ha", require("harpoon.mark").add_file)
@@ -123,27 +142,24 @@ keymap.set('n', '<leader>gn', '<cmd>lua vim.diagnostic.goto_next()<CR>')
 keymap.set('n', '<leader>tr', '<cmd>lua vim.lsp.buf.document_symbol()<CR>')
 keymap.set('i', '<C-Space>', '<cmd>lua vim.lsp.buf.completion()<CR>')
 
--- Toggle Supermaven correctamente sin afectar LSP ni snippets
+-- Toggle Supermaven (sin afectar LSP ni snippets)
 local supermaven_enabled = true
-
-vim.keymap.set('n', '<leader>sm', function()
+keymap.set('n', '<leader>as', function()
   local cmp = require('cmp')
   if supermaven_enabled then
-    -- Quitamos Supermaven de las sources
     cmp.setup.buffer {
       sources = {
-        { name = "nvim_lsp" }, -- Deja activo LSP
-        { name = "luasnip" },  -- Snippets
+        { name = "nvim_lsp" },
+        { name = "luasnip" },
         { name = "buffer" },
         { name = "path" },
       }
     }
     print("🛑 Supermaven Desactivado")
   else
-    -- Volvemos a agregar Supermaven
     cmp.setup.buffer {
       sources = {
-        { name = "supermaven" }, -- Reactivas Supermaven
+        { name = "supermaven" },
         { name = "nvim_lsp" },
         { name = "luasnip" },
         { name = "buffer" },
@@ -157,9 +173,9 @@ end, { noremap = true, silent = true, desc = "Toggle Supermaven" })
 
 vim.api.nvim_create_user_command("FormatJava", function()
   local file = vim.fn.expand("%")
-  vim.cmd("write") -- Guarda antes de formatear
+  vim.cmd("write")
   os.execute("google-java-format -i " .. file)
-  vim.cmd("edit")  -- Recarga archivo
+  vim.cmd("edit")
 end, {})
 
-vim.keymap.set("n", "<leader>fj", ":FormatJava<CR>", { desc = "Formatear Java con google-java-format" })
+keymap.set("n", "<leader>fj", ":FormatJava<CR>", { desc = "Formatear Java con google-java-format" })
