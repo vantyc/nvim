@@ -1,92 +1,73 @@
--- LSP Support
+-- LSP Support (Neovim 0.11+ API)
 return {
-  -- LSP Configuration
-  -- https://github.com/neovim/nvim-lspconfig
   'neovim/nvim-lspconfig',
   event = 'VeryLazy',
   dependencies = {
-    -- LSP Management
-    -- https://github.com/williamboman/mason.nvim
     { 'williamboman/mason.nvim' },
-    -- https://github.com/williamboman/mason-lspconfig.nvim
     { 'williamboman/mason-lspconfig.nvim' },
-
-    -- Auto-Install LSPs, linters, formatters, debuggers
-    -- https://github.com/WhoIsSethDaniel/mason-tool-installer.
     { 'WhoIsSethDaniel/mason-tool-installer.nvim' },
-
-    -- Useful status updates for LSP
-    -- https://github.com/j-hui/fidget.nvim
     { 'j-hui/fidget.nvim', opts = {} },
-
-    -- Additional lua configuration, makes nvim stuff amazing!
-    -- https://github.com/folke/neodev.nvim
     { 'folke/neodev.nvim', opts = {} },
   },
-  config = function ()
+  config = function()
     require('mason').setup()
+
+    local servers = {
+      'lua_ls',
+      'marksman',
+      'quick_lint_js',
+    }
+
     require('mason-lspconfig').setup({
-      -- Install these LSPs automatically
-      ensure_installed = {
-        -- 'bashls', -- requires npm to be installed
-        -- 'cssls', -- requires npm to be installed
-        -- 'html', -- requires npm to be installed
-        'lua_ls',
-        'jdtls',
-        -- 'jsonls', -- requires npm to be installed
-        -- 'lemminx',
-        'marksman',
-        'quick_lint_js',
-        -- 'yamlls', -- requires npm to be installed
-      }
+      ensure_installed = servers,
+      automatic_enable = false,
     })
 
     require('mason-tool-installer').setup({
-      -- Install these linters, formatters, debuggers automatically
       ensure_installed = {
         'java-debug-adapter',
         'java-test',
       },
     })
 
-    local lspconfig = require('lspconfig')
-    local lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
-    local lsp_attach = function(client, bufnr)
-      -- Create your keybindings here...
-    end
+    local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-    -- Call setup on each LSP server
-    require('mason-lspconfig').setup_handlers({
-      function(server_name)
+    if vim.fn.has('nvim-0.11') == 1 then
+      -- Neovim 0.11+ API
+      for _, server_name in ipairs(servers) do
         if server_name ~= 'jdtls' then
-        lspconfig[server_name].setup({
-          on_attach = lsp_attach,
-          capabilities = lsp_capabilities,
-        })
+          local opts = { capabilities = capabilities }
+          if server_name == 'lua_ls' then
+            opts.settings = {
+              Lua = { diagnostics = { globals = { 'vim' } } },
+            }
+          end
+          vim.lsp.config(server_name, opts)
+          vim.lsp.enable(server_name)
         end
       end
-    })
+    else
+      -- Fallback for Neovim < 0.11
+      local lspconfig = require('lspconfig')
+      for _, server_name in ipairs(servers) do
+        if server_name ~= 'jdtls' then
+          local opts = { capabilities = capabilities }
+          if server_name == 'lua_ls' then
+            opts.settings = {
+              Lua = { diagnostics = { globals = { 'vim' } } },
+            }
+          end
+          lspconfig[server_name].setup(opts)
+        end
+      end
+    end
 
-    -- Lua LSP settings
-    lspconfig.lua_ls.setup {
-      settings = {
-        Lua = {
-          diagnostics = {
-            -- Get the language server to recognize the `vim` global
-            globals = {'vim'},
-          },
-        },
-      },
-    }
-
-    -- Globally configure all LSP floating preview popups (like hover, signature help, etc)
+    -- Globally configure LSP floating preview popups
     local open_floating_preview = vim.lsp.util.open_floating_preview
     function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
       opts = opts or {}
-      opts.border = opts.border or "rounded" -- Set border to rounded
+      opts.border = opts.border or 'rounded'
       return open_floating_preview(contents, syntax, opts, ...)
     end
-
-  end
+  end,
 }
-

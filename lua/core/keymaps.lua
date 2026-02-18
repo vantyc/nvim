@@ -39,40 +39,32 @@ keymap.set("n", "<leader>tx", ":tabclose<CR>") -- close a tab
 keymap.set("n", "<leader>tn", ":tabn<CR>") -- next tab
 keymap.set("n", "<leader>tp", ":tabp<CR>") -- previous tab
 
--- Toggle autocompletion (nvim-cmp) and remove supermaven
+-- Toggle autocompletion (nvim-cmp) WITHOUT nuking sources
 keymap.set("n", "<leader>ac", function()
-    local cmp = require('cmp')
-    if cmp.get_config().enabled then
-        cmp.setup.buffer({ enabled = false, sources = {} }) -- Desactiva y elimina fuentes
-        print("Auto-completion disabled")
-    else
-        cmp.setup.buffer({
-            enabled = true,
-            sources = {
-                { name = "nvim_lsp" },
-                { name = "luasnip" },
-                { name = "buffer" },
-                { name = "path" }
-            }
-        })
-        print("Auto-completion enabled")
-    end
+  local cmp = require('cmp')
+  local cfg = cmp.get_config()
+
+  local enabled = cfg.enabled
+  if type(enabled) == "function" then enabled = true end
+
+  cmp.setup.buffer({ enabled = not enabled })
+  print((not enabled) and "Auto-completion enabled" or "Auto-completion disabled")
 end, { noremap = true, silent = true })
 
--- Diff keymaps (<leader>cc = avante chat; <leader>cd para diff en merge)
-keymap.set("n", "<leader>cd", ":diffput<CR>") -- put diff from current to other during diff
-keymap.set("n", "<leader>cj", ":diffget 1<CR>") -- get diff from left (local) during merge
-keymap.set("n", "<leader>ck", ":diffget 3<CR>") -- get diff from right (remote) during merge
-keymap.set("n", "<leader>cn", "]c") -- next diff hunk
-keymap.set("n", "<leader>cp", "[c") -- previous diff hunk
+-- Diff keymaps
+keymap.set("n", "<leader>cd", ":diffput<CR>")
+keymap.set("n", "<leader>cj", ":diffget 1<CR>")
+keymap.set("n", "<leader>ck", ":diffget 3<CR>")
+keymap.set("n", "<leader>cn", "]c")
+keymap.set("n", "<leader>cp", "[c")
 
 -- Quickfix keymaps
-keymap.set("n", "<leader>qo", ":copen<CR>") -- open quickfix list
-keymap.set("n", "<leader>qf", ":cfirst<CR>") -- jump to first quickfix list item
-keymap.set("n", "<leader>qn", ":cnext<CR>") -- jump to next quickfix list item
-keymap.set("n", "<leader>qp", ":cprev<CR>") -- jump to prev quickfix list item
-keymap.set("n", "<leader>ql", ":clast<CR>") -- jump to last quickfix list item
-keymap.set("n", "<leader>qc", ":cclose<CR>") -- close quickfix list
+keymap.set("n", "<leader>qo", ":copen<CR>")
+keymap.set("n", "<leader>qf", ":cfirst<CR>")
+keymap.set("n", "<leader>qn", ":cnext<CR>")
+keymap.set("n", "<leader>qp", ":cprev<CR>")
+keymap.set("n", "<leader>ql", ":clast<CR>")
+keymap.set("n", "<leader>qc", ":cclose<CR>")
 
 -- Vim-maximizer
 keymap.set("n", "<leader>sm", ":MaximizerToggle<CR>", { desc = "toggle maximize tab" })
@@ -80,7 +72,7 @@ keymap.set("n", "<leader>sm", ":MaximizerToggle<CR>", { desc = "toggle maximize 
 -- Nvim-tree
 keymap.set("n", "<leader>n", "<cmd>NvimTreeToggle<cr>")
 keymap.set("n", "<leader>e", "<c-w><c-w>")
-keymap.set("n", "<leader>ef", ":NvimTreeFindFile<CR>") -- find file in file explorer
+keymap.set("n", "<leader>ef", ":NvimTreeFindFile<CR>")
 
 -- Telescope
 keymap.set('n', '<leader>ff', require('telescope.builtin').find_files, {})
@@ -92,37 +84,10 @@ keymap.set('n', '<leader>fo', require('telescope.builtin').lsp_document_symbols,
 keymap.set('n', '<leader>fi', require('telescope.builtin').lsp_incoming_calls, {})
 
 -- Git-blame
-keymap.set("n", "<leader>gb", ":GitBlameToggle<CR>") -- toggle git blame
-
--- Kubernetes: terminal flotante con kubectl
-local function k8s_float_term(cmd)
-  local buf = vim.api.nvim_create_buf(false, true)
-  vim.api.nvim_open_win(buf, true, {
-    relative = 'editor',
-    width = math.floor(vim.o.columns * 0.9),
-    height = math.floor(vim.o.lines * 0.8),
-    row = math.floor((vim.o.lines - vim.o.lines * 0.8) / 2),
-    col = math.floor((vim.o.columns - vim.o.columns * 0.9) / 2),
-    style = 'minimal',
-    border = 'rounded',
-  })
-  vim.api.nvim_buf_set_keymap(buf, 't', '<Esc>', '<C-\\><C-n>', { noremap = true })
-  vim.api.nvim_buf_set_keymap(buf, 't', 'q', '<C-\\><C-n>:close<CR>', { noremap = true })
-  vim.fn.termopen(cmd, { cwd = vim.fn.getcwd() })
-  vim.cmd('startinsert')
-end
-keymap.set("n", "<leader>kp", function() k8s_float_term("kubectl get pods -A") end, { desc = "K8s: get pods -A" })
-keymap.set("n", "<leader>kl", function() k8s_float_term("kubectl logs -f") end, { desc = "K8s: logs -f" })
-
--- Harpoon
-keymap.set("n", "<leader>ha", require("harpoon.mark").add_file)
-keymap.set("n", "<leader>hh", require("harpoon.ui").toggle_quick_menu)
-for i = 1, 9 do
-    keymap.set("n", "<leader>h" .. i, function() require("harpoon.ui").nav_file(i) end)
-end
+keymap.set("n", "<leader>gb", ":GitBlameToggle<CR>")
 
 -- Vim REST Console
-keymap.set("n", "<leader>xr", ":call VrcQuery()<CR>") -- Run REST query
+keymap.set("n", "<leader>xr", ":call VrcQuery()<CR>")
 
 -- LSP
 keymap.set('n', '<leader>gh', '<cmd>lua vim.lsp.buf.hover()<CR>')
@@ -140,9 +105,13 @@ keymap.set('n', '<leader>gl', '<cmd>lua vim.diagnostic.open_float()<CR>')
 keymap.set('n', '<leader>gp', '<cmd>lua vim.diagnostic.goto_prev()<CR>')
 keymap.set('n', '<leader>gn', '<cmd>lua vim.diagnostic.goto_next()<CR>')
 keymap.set('n', '<leader>tr', '<cmd>lua vim.lsp.buf.document_symbol()<CR>')
-keymap.set('i', '<C-Space>', '<cmd>lua vim.lsp.buf.completion()<CR>')
 
--- Toggle Supermaven (sin afectar LSP ni snippets)
+-- ✅ FIX: Ctrl+Space should trigger nvim-cmp, not vim.lsp.buf.completion()
+keymap.set('i', '<C-Space>', function()
+  require('cmp').complete()
+end, { noremap = true, silent = true })
+
+-- Toggle Supermaven (unchanged)
 local supermaven_enabled = true
 keymap.set('n', '<leader>as', function()
   local cmp = require('cmp')

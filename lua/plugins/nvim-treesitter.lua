@@ -28,9 +28,11 @@ return {
       'yaml',
     },
   },
-  config = function (_, opts)
-    local configs = require("nvim-treesitter.configs")
-    configs.setup(opts)
-  end
+  config = function(_, opts)
+    local ok, configs = pcall(require, "nvim-treesitter.configs")
+    if ok and configs then
+      configs.setup(opts)
+    end
+  end,
 }
 

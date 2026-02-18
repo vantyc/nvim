@@ -1,14 +1,13 @@
 -- JDTLS (Java LSP) configuration
 local jdtls = require('jdtls')
+
 local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t')
 local workspace_dir = vim.env.HOME .. '/jdtls-workspace/' .. project_name
 
--- Needed for debugging
 local bundles = {
   vim.fn.glob(vim.env.HOME .. '/.local/share/nvim/mason/share/java-debug-adapter/com.microsoft.java.debug.plugin.jar'),
 }
 
--- Needed for running/debugging unit tests
 vim.list_extend(bundles, vim.split(vim.fn.glob(vim.env.HOME .. "/.local/share/nvim/mason/share/java-test/*.jar", true), "\n"))
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
@@ -58,29 +57,24 @@ local config = {
       importOrder = { "java", "javax", "com", "org" },
     },
     extendedClientCapabilities = jdtls.extendedClientCapabilities,
-    sources = {
-      organizeImports = {
-        starThreshold = 9999,
-        staticStarThreshold = 9999,
-      },
-    },
-    codeGeneration = {
-      toString = { template = "${object.className}{${member.name()}=${member.value}, ${otherMembers}}" },
-      useBlocks = true,
-    },
   },
 
-  capabilities = capabilities, -- Aquí agregas las capacidades ya modificadas
-
+  capabilities = capabilities,
   flags = { allow_incremental_sync = true },
-
-  init_options = { bundles = bundles }
+  init_options = { bundles = bundles },
 }
 
-config['on_attach'] = function(client, bufnr)
+config.on_attach = function(client, bufnr)
   jdtls.setup_dap({ hotcodereplace = 'auto' })
-  require('jdtls.dap').setup_dap_main_class_configs()
+
+  -- 🔥 Desactivado porque provoca:
+  -- No LSP client found that supports vscode.java.resolveMainClass
+  -- require('jdtls.dap').setup_dap_main_class_configs()
+
+  vim.keymap.set('n', '<leader>df', function() require('jdtls').test_class() end, { buffer = bufnr })
+  vim.keymap.set('n', '<leader>dn', function() require('jdtls').test_nearest_method() end, { buffer = bufnr })
 end
 
-jdtls.start_or_attach(config)
-
+vim.schedule(function()
+  jdtls.start_or_attach(config)
+end)
